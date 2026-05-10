@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BetRehber</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#C9A84C;
+  --dark:#0A0A0F;
+  --dark2:#111118;
+  --dark3:#1A1A26;
+  --text:#E8E4D8;
+  --muted:#6A6680;
+  --border:rgba(201,168,76,0.2);
+  --bh:72px;
+}
+html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;font-size:15px;overflow-x:hidden;min-height:100vh}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:300;height:56px;background:#0A0A0F;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.logo{height:36px;width:auto;object-fit:contain;display:block}
+.hbtns{display:flex;gap:10px}
+.hb{height:34px;padding:0 18px;border-radius:6px;font-size:13px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer}
+.hb-out{background:transparent;color:var(--gold);border:1px solid rgba(201,168,76,0.5)}
+.hb-fill{background:var(--gold);color:#0A0A0F;border:none}
+
+/* ── PAGES ── */
+.page{display:none;padding-bottom:calc(var(--bh) + 16px)}
+.page.on{display:block}
+
+/* ── HERO ── */
+.hero img{width:100%;display:block;height:auto;object-fit:cover}
+
+/* ── CAT BAR ── */
+.catbar{display:flex;overflow-x:auto;scrollbar-width:none;background:var(--dark2);border-bottom:1px solid var(--border);padding:12px 10px;gap:2px}
+.catbar::-webkit-scrollbar{display:none}
+.ci{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:8px 10px;border-radius:12px;cursor:pointer;
+  flex-shrink:0;min-width:68px;transition:.2s;
+  position:relative;
+}
+.ci img{width:48px;height:48px;object-fit:contain;transition:.2s}
+.ci span{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;transition:.2s}
+.ci.on{background:rgba(201,168,76,0.08)}
+.ci.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--gold);border-radius:2px}
+.ci.on img{filter:drop-shadow(0 0 6px rgba(201,168,76,0.5))}
+.ci.on span{color:var(--gold)}
+.ci:active{background:rgba(201,168,76,0.1)}
+
+/* ── SECTION TITLE ── */
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;padding:18px 16px 12px;display:flex;align-items:center;gap:8px}
+.stitle::before{content:'';display:block;width:4px;height:18px;background:var(--gold);border-radius:2px;flex-shrink:0}
+
+/* ── BONUS CARDS ── */
+.bwrap{padding:0 16px 8px}
+.bscroll{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.bscroll::-webkit-scrollbar{display:none}
+.bcard{
+  flex:0 0 calc(33.333% - 8px);
+  min-width:0;
+  background:var(--dark3);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;
+  padding-bottom:14px;cursor:pointer;transition:.2s;
+}
+.bcard:active{transform:scale(.95);border-color:var(--gold)}
+/* Görsel tam boy — aspect-ratio yok, img doğal boyutunu koruyor */
+.bimg{width:100%;overflow:hidden;border-radius:14px 14px 0 0;flex-shrink:0;background:#000}
+.bimg img{width:100%;height:auto;display:block;object-fit:contain}
+.blbl{font-size:12px;font-weight:700;text-align:center;padding:10px 6px 6px;line-height:1.3;color:var(--text);width:100%}
+.bbadge{
+  background:rgba(201,168,76,0.12);color:var(--gold);
+  border:1px solid rgba(201,168,76,0.4);
+  font-size:11px;padding:5px 14px;border-radius:20px;font-weight:700;letter-spacing:.5px;
+  transition:.2s;
+}
+
+/* ── CASINO CARDS ── */
+.csection{padding:0 16px}
+.ccard{background:var(--dark2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;display:block;text-decoration:none;color:inherit;transition:.2s}
+.ccard:active{border-color:var(--gold);transform:scale(.99)}
+.cbanner{position:relative;width:100%;padding-bottom:34%;overflow:hidden;background:#000}
+.cbanner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cbody{padding:12px 14px;display:flex;align-items:center;gap:12px}
+.clogo{width:52px;height:52px;flex-shrink:0;object-fit:contain;border-radius:10px;background:var(--dark3);padding:5px;border:1px solid var(--border)}
+.cinfo{flex:1;min-width:0}
+.cname{font-weight:700;font-size:16px;margin-bottom:2px}
+.cbonus{font-size:13px;color:var(--gold);font-weight:600}
+.ctags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.ctag{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:3px 8px;border-radius:4px;font-size:10px;color:var(--muted)}
+.cright{text-align:right;flex-shrink:0}
+.cscore{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--text);line-height:1}
+.cscore small{font-size:12px;color:var(--muted);font-family:'Barlow',sans-serif}
+.cstars{color:var(--gold);font-size:13px;letter-spacing:.5px;margin-bottom:4px}
+.cgit{display:block;margin-top:6px;background:var(--gold);color:#0A0A0F;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;text-align:center}
+
+/* ── CASINO PAGE RANK ── */
+.rlist{padding:12px 16px}
+.ritem{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;transition:.15s}
+.ritem:active{border-color:var(--gold)}
+.rnum{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--muted);min-width:28px;text-align:center;line-height:1}
+.rnum.g{color:var(--gold)}
+.rlogo{width:48px;height:48px;flex-shrink:0;object-fit:contain;border-radius:10px;background:var(--dark3);padding:4px;border:1px solid var(--border)}
+.rinfo{flex:1;min-width:0}
+.rname{font-weight:700;font-size:15px}
+.rbonus{font-size:12px;color:var(--gold);font-weight:600;margin-top:2px}
+.rscore{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text)}
+
+/* ── GAMES ── */
+.games-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
+.gcard{background:var(--dark2);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:.2s}
+.gcard:active{border-color:var(--gold);transform:scale(.97)}
+.gthumb{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#000}
+.gthumb-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.gthumb-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.gemoji{font-size:48px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.7))}
+.gbadge-rtp{background:rgba(0,0,0,.55);border:1px solid rgba(46,204,113,.4);color:#2ECC71;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.ginfo{padding:10px 10px 12px}
+.gname{font-weight:700;font-size:13px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gprovider{font-size:10px;color:var(--muted)}
+.gwin{font-size:11px;color:var(--gold);font-weight:700;margin-top:5px}
+.gbtn{display:block;width:100%;margin-top:8px;background:var(--gold);color:#0A0A0F;border:none;padding:9px;border-radius:8px;font-size:12px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;text-align:center;transition:.15s}
+.gbtn:active{background:#b8942a}
+
+/* ── SLOT OVERLAY ── */
+.slot-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);
+  display:flex;align-items:center;justify-content:center;
+  z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.slot-overlay.show{opacity:1;pointer-events:all}
+.slot-box{
+  background:var(--dark3);border:2px solid var(--gold);
+  border-radius:20px;padding:24px 28px;text-align:center;
+  max-width:300px;width:90%;
+}
+.slot-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:16px;color:var(--gold)}
+.slot-reels{display:flex;gap:12px;justify-content:center;margin-bottom:20px}
+.reel{
+  width:70px;height:80px;background:var(--dark);
+  border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;position:relative;
+}
+.reel-inner{
+  display:flex;flex-direction:column;
+  transition:transform 0s;
+}
+.reel-item{height:80px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.slot-msg{font-size:14px;color:var(--text-muted);min-height:22px;transition:.3s}
+.slot-win-msg{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#2ECC71;letter-spacing:1px;min-height:34px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(var(--bh)+16px);left:50%;transform:translateX(-50%) translateY(10px);background:#1a2a1a;border:1px solid #2ECC71;color:#2ECC71;padding:10px 22px;border-radius:30px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:.3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── PLACEHOLDER ── */
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:12px;color:var(--muted);font-size:14px}
+.ph .phtitle{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--text);letter-spacing:2px}
+
+/* ── YORUMLAR ── */
+.yfil{background:var(--dark3);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;font-family:'Barlow',sans-serif;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.2s}
+.yfil.on{background:rgba(201,168,76,0.15);border-color:var(--gold);color:var(--gold)}
+.ycard{background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:14px;transition:.15s}
+.ycard:active{border-color:var(--gold)}
+.ytop{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.yavatar{width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--border)}
+.ymeta{flex:1;min-width:0}
+.yname{font-weight:700;font-size:14px}
+.yside{font-size:11px;color:var(--gold);font-weight:600;margin-top:1px}
+.ystars{color:var(--gold);font-size:13px;letter-spacing:1px}
+.ytime{font-size:11px;color:var(--muted);margin-left:auto;flex-shrink:0;align-self:flex-start;padding-top:2px}
+.ytext{font-size:13px;color:var(--text);line-height:1.6}
+.ytag{display:inline-block;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:var(--gold);font-size:10px;padding:2px 8px;border-radius:10px;margin-top:8px;font-weight:600}
+.ylikes{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.ylike-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:4px 12px;border-radius:20px;font-size:12px;font-family:'Barlow',sans-serif;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:4px}
+.ylike-btn.liked{border-color:rgba(201,168,76,0.4);color:var(--gold);background:rgba(201,168,76,0.08)}
+.yfil-wrap{display:flex;gap:8px;padding:0 16px 14px;overflow-x:auto;scrollbar-width:none}
+.yfil-wrap::-webkit-scrollbar{display:none}
+
+/* ── PROFİL ── */
+.prof-header{
+  background:linear-gradient(180deg,#1a1426 0%,var(--dark) 100%);
+  padding:28px 20px 20px;
+  display:flex;flex-direction:column;align-items:center;
+  border-bottom:1px solid var(--border);
+  position:relative;
+}
+.prof-avatar-wrap{position:relative;margin-bottom:14px}
+.prof-avatar{
+  width:84px;height:84px;border-radius:50%;
+  object-fit:cover;display:block;
+  border:3px solid var(--gold);
+}
+.prof-avatar-placeholder{
+  width:84px;height:84px;border-radius:50%;
+  background:linear-gradient(135deg,#2a1a60,#1a0a30);
+  border:3px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-size:34px;
+}
+.prof-online{
+  position:absolute;bottom:4px;right:4px;
+  width:18px;height:18px;border-radius:50%;
+  background:#2ECC71;border:2px solid var(--dark);
+}
+.prof-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-bottom:2px}
+.prof-username{font-size:13px;color:var(--gold);font-weight:600;margin-bottom:4px}
+.prof-id{font-size:11px;color:var(--muted)}
+.prof-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);
+  color:var(--gold);font-size:11px;font-weight:700;
+  padding:4px 12px;border-radius:20px;margin-top:8px;
+}
+.prof-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+}
+.prof-stat{
+  background:var(--dark2);
+  padding:14px 8px;text-align:center;
+}
+.prof-stat-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);display:block;line-height:1}
+.prof-stat-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.prof-section{padding:0 16px;margin-bottom:14px}
+.prof-section-title{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding-left:2px}
+.prof-card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.prof-row{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 14px;border-bottom:1px solid var(--border);
+}
+.prof-row:last-child{border-bottom:none}
+.prof-row-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.prof-row-icon.gold{background:rgba(201,168,76,0.12)}
+.prof-row-icon.blue{background:rgba(50,130,255,0.12)}
+.prof-row-icon.green{background:rgba(46,204,113,0.12)}
+.prof-row-icon.red{background:rgba(231,76,60,0.12)}
+.prof-row-info{flex:1;min-width:0}
+.prof-row-label{font-size:13px;font-weight:600;color:var(--text)}
+.prof-row-val{font-size:11px;color:var(--muted);margin-top:1px}
+.prof-row-arrow{color:var(--muted);font-size:16px}
+.prof-lang-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:calc(100% - 32px);margin:0 16px 16px;
+  background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);
+  color:#e74c3c;padding:13px;border-radius:12px;
+  font-size:13px;font-weight:700;font-family:'Barlow',sans-serif;cursor:pointer;
+}
+
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--bh);background:#0A0A0F;border-top:1px solid var(--border);display:flex;z-index:300}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:4px 0;transition:.15s;position:relative}
+.ni:active{background:rgba(201,168,76,0.06)}
+.ni img{width:30px;height:30px;object-fit:contain;opacity:.35;transition:.2s}
+.ni span{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.2px;transition:.2s}
+.ni.on img{opacity:1;filter:drop-shadow(0 0 4px rgba(201,168,76,.4))}
+.ni.on span{color:var(--gold)}
+.ni.on::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:24px;height:2px;background:var(--gold);border-radius:0 0 2px 2px}
+
+@supports(padding-bottom:env(safe-area-inset-bottom)){
+  .bnav{padding-bottom:env(safe-area-inset-bottom)}
+  .page{padding-bottom:calc(var(--bh) + env(safe-area-inset-bottom) + 12px)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img class="logo" src="https://i.hizliresim.com/jy2m4bc.png" alt="Logo">
+  <div class="hbtns">
+    <button class="hb hb-out">Giriş</button>
+    <button class="hb hb-fill">Kayıt</button>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+
+<!-- SLOT OVERLAY -->
+<div class="slot-overlay" id="slotOverlay">
+  <div class="slot-box">
+    <div class="slot-title">🎰 Çarklar Dönüyor...</div>
+    <div class="slot-reels">
+      <div class="reel"><div class="reel-inner" id="r0"></div></div>
+      <div class="reel"><div class="reel-inner" id="r1"></div></div>
+      <div class="reel"><div class="reel-inner" id="r2"></div></div>
+    </div>
+    <div class="slot-win-msg" id="slotWinMsg"></div>
+    <div class="slot-msg" id="slotMsg">İyi şanslar!</div>
+  </div>
+</div>
+
+<!-- ══ ANASAYFA ══ -->
+<div class="page on" id="pg-home">
+  <div class="hero"><img src="https://i.hizliresim.com/jar4swf.png" alt="Ana Banner"></div>
+
+  <div class="catbar">
+    <div class="ci on"><img src="https://i.hizliresim.com/fgehm9n.png" alt="Casino"><span>Casino</span></div>
+    <div class="ci"><img src="https://i.hizliresim.com/1tyncjb.png" alt="Bahisler"><span>Bahisler</span></div>
+    <div class="ci"><img src="https://i.hizliresim.com/bz21vtn.png" alt="Poker"><span>Poker</span></div>
+    <div class="ci"><img src="https://i.hizliresim.com/qkbp3mo.png" alt="Providers"><span>Providers</span></div>
+    <div class="ci"><img src="https://i.hizliresim.com/hqh65l5.png" alt="Slotlar"><span>Slotlar</span></div>
+    <div class="ci"><img src="https://i.hizliresim.com/iu3h0yp.png" alt="Haberler"><span>Haberler</span></div>
+  </div>
+
+  <div class="stitle">Günlük Fırsatlar</div>
+  <div class="bwrap">
+    <div class="bscroll">
+      <div class="bcard" onclick="bonusTap(this,'AL')">
+        <div class="bimg"><img src="https://i.hizliresim.com/okiq2ie.png" alt="Günlük Bonus"></div>
+        <div class="blbl">Günlük Bonus</div>
+        <div class="bbadge">AL</div>
+      </div>
+      <div class="bcard" onclick="bonusTap(this,'ÇEVİR')">
+        <div class="bimg"><img src="https://i.hizliresim.com/5qxsp73.png" alt="Kısmet Çarkı"></div>
+        <div class="blbl">Kısmet Çarkı</div>
+        <div class="bbadge">ÇEVİR</div>
+      </div>
+      <div class="bcard" onclick="bonusTap(this,'AÇ')">
+        <div class="bimg"><img src="https://i.hizliresim.com/ku9rjs6.png" alt="Ücretsiz Kasa"></div>
+        <div class="blbl">Ücretsiz Kasa</div>
+        <div class="bbadge">AÇ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stitle">En İyi Casinolar</div>
+  <div class="csection">
+    <a class="ccard" href="https://zbhs.short.gy/j4Qr4V" target="_blank">
+      <div class="cbanner"><img src="https://i.hizliresim.com/8qzls9s.jpeg" alt="Zbahis"></div>
+      <div class="cbody">
+        <img class="clogo" src="https://i.hizliresim.com/6fnmzz0.png" alt="Zbahis">
+        <div class="cinfo">
+          <div class="cname">Zbahis</div>
+          <div class="cbonus">666₺ Deneme Bonusu</div>
+          <div class="ctags"><span class="ctag">Hızlı Ödeme</span><span class="ctag">7/24 Destek</span><span class="ctag">Kripto</span></div>
+        </div>
+        <div class="cright">
+          <div class="cstars">★★★★★</div>
+          <div class="cscore">4.8<small>/5</small></div>
+          <div class="cgit">Siteye Git →</div>
+        </div>
+      </div>
+    </a>
+    <a class="ccard" href="https://t2m.co/Enic4rq" target="_blank">
+      <div class="cbanner"><img src="https://i.hizliresim.com/9yg7v83.jpeg" alt="Fixbet"></div>
+      <div class="cbody">
+        <img class="clogo" src="https://i.hizliresim.com/oy7cbng.png" alt="Fixbet">
+        <div class="cinfo">
+          <div class="cname">Fixbet</div>
+          <div class="cbonus">1.000₺ Deneme Bonusu</div>
+          <div class="ctags"><span class="ctag">Anlık Çekim</span><span class="ctag">Mobil Uyumlu</span></div>
+        </div>
+        <div class="cright">
+          <div class="cstars">★★★★★</div>
+          <div class="cscore">4.8<small>/5</small></div>
+          <div class="cgit">Siteye Git →</div>
+        </div>
+      </div>
+    </a>
+    <a class="ccard" href="https://tinyurl.com/7pweaty7" target="_blank">
+      <div class="cbanner"><img src="https://i.hizliresim.com/psmn4dw.jpeg" alt="Matadorbet"></div>
+      <div class="cbody">
+        <img class="clogo" src="https://i.hizliresim.com/auxcb6k.png" alt="Matadorbet">
+        <div class="cinfo">
+          <div class="cname">MatadorBet</div>
+          <div class="cbonus">1.000₺ Deneme Bonusu</div>
+          <div class="ctags"><span class="ctag">VIP Program</span><span class="ctag">Spor Bahis</span></div>
+        </div>
+        <div class="cright">
+          <div class="cstars">★★★★☆</div>
+          <div class="cscore">4.8<small>/5</small></div>
+          <div class="cgit">Siteye Git →</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ══ CASİNO ══ -->
+<div class="page" id="pg-casino">
+  <div class="stitle">Casino Sıralaması</div>
+  <div class="rlist">
+    <a class="ritem" href="https://zbhs.short.gy/j4Qr4V" target="_blank">
+      <div class="rnum g">1</div>
+      <img class="rlogo" src="https://i.hizliresim.com/6fnmzz0.png" alt="Zbahis">
+      <div class="rinfo"><div class="rname">Zbahis</div><div class="rbonus">666₺ Deneme Bonusu</div></div>
+      <div class="rscore">4.8</div>
+    </a>
+    <a class="ritem" href="https://t2m.co/Enic4rq" target="_blank">
+      <div class="rnum g">2</div>
+      <img class="rlogo" src="https://i.hizliresim.com/oy7cbng.png" alt="Fixbet">
+      <div class="rinfo"><div class="rname">Fixbet</div><div class="rbonus">1.000₺ Deneme Bonusu</div></div>
+      <div class="rscore">4.8</div>
+    </a>
+    <a class="ritem" href="https://tinyurl.com/7pweaty7" target="_blank">
+      <div class="rnum g">3</div>
+      <img class="rlogo" src="https://i.hizliresim.com/auxcb6k.png" alt="Matadorbet">
+      <div class="rinfo"><div class="rname">MatadorBet</div><div class="rbonus">1.000₺ Deneme Bonusu</div></div>
+      <div class="rscore">4.8</div>
+    </a>
+  </div>
+</div>
+
+<!-- ══ YORUMLAR ══ -->
+<div class="page" id="pg-yorumlar">
+  <div class="stitle">Kullanıcı Yorumları</div>
+  <div class="yfil-wrap">
+    <button class="yfil on" onclick="filterYorum(this,'all')">Tümü</button>
+    <button class="yfil" onclick="filterYorum(this,'zbahis')">Zbahis</button>
+    <button class="yfil" onclick="filterYorum(this,'fixbet')">Fixbet</button>
+    <button class="yfil" onclick="filterYorum(this,'matadorbet')">MatadorBet</button>
+    <button class="yfil" onclick="filterYorum(this,'platform')">Platform</button>
+  </div>
+  <div id="yorum-list" style="padding:0 16px;display:flex;flex-direction:column;gap:12px;padding-bottom:8px"></div>
+</div>
+
+<!-- ══ OYUNLAR ══ -->
+<div class="page" id="pg-oyunlar">
+  <div class="stitle">Popüler Slotlar</div>
+  <div class="games-grid" id="games-grid"></div>
+</div>
+
+<!-- ══ PROFİL ══ -->
+<div class="page" id="pg-profil">
+
+  <!-- Avatar + isim -->
+  <div class="prof-header">
+    <div class="prof-avatar-wrap">
+      <div id="prof-avatar-area">
+        <!-- JS ile doldurulacak -->
+        <div class="prof-avatar-placeholder">👤</div>
+      </div>
+      <div class="prof-online"></div>
+    </div>
+    <div class="prof-name" id="prof-name">Yükleniyor...</div>
+    <div class="prof-username" id="prof-username"></div>
+    <div class="prof-id" id="prof-id"></div>
+    <div class="prof-badge">⭐ Üye</div>
+  </div>
+
+  <!-- İstatistikler -->
+  <div class="prof-stats">
+    <div class="prof-stat">
+      <span class="prof-stat-num" id="pstat-gun">0</span>
+      <div class="prof-stat-lbl">Gün</div>
+    </div>
+    <div class="prof-stat">
+      <span class="prof-stat-num">3</span>
+      <div class="prof-stat-lbl">Casino</div>
+    </div>
+    <div class="prof-stat">
+      <span class="prof-stat-num" id="pstat-bonus">0</span>
+      <div class="prof-stat-lbl">Bonus</div>
+    </div>
+  </div>
+
+  <!-- Hesap Bilgileri -->
+  <div class="prof-section">
+    <div class="prof-section-title">Hesap Bilgileri</div>
+    <div class="prof-card">
+      <div class="prof-row">
+        <div class="prof-row-icon gold">👤</div>
+        <div class="prof-row-info">
+          <div class="prof-row-label">Ad Soyad</div>
+          <div class="prof-row-val" id="prow-name">—</div>
+        </div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-row-icon blue">🔗</div>
+        <div class="prof-row-info">
+          <div class="prof-row-label">Kullanıcı Adı</div>
+          <div class="prof-row-val" id="prow-username">—</div>
+        </div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-row-icon green">🆔</div>
+        <div class="prof-row-info">
+          <div class="prof-row-label">Telegram ID</div>
+          <div class="prof-row-val" id="prow-id">—</div>
+        </div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-row-icon gold">🌐</div>
+        <div class="prof-row-info">
+          <div class="prof-row-label">Dil</div>
+          <div class="prof-row-val" id="prow-lang">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hızlı Erişim -->
+  <div class="prof-section">
+    <div class="prof-section-title">Hızlı Erişim</div>
+    <div class="prof-card">
+      <div class="prof-row" onclick="goPage('oyunlar')" style="cursor:pointer">
+        <div class="prof-row-icon gold">🎰</div>
+        <div class="prof-row-info">
+          <div class="prof-row-label">Oyunlar</div>
+          <div class="prof-row-val">10 popüler slot</div>
+        </div>
+        <div class="prof-row-arrow">›</div>
+      </div>
+      <div class="prof-row" onclick="goPage('casino')" style="cursor:pointer">
+        <div class="prof-row-icon blue">🏆</div>
+        <div class="prof-row-info">
+          <div class="prof-row-label">Casino Sıralaması</div>
+          <div class="prof-row-val">En iyi 3 site</div>
+        </div>
+        <div class="prof-row-arrow">›</div>
+      </div>
+      <div class="prof-row" onclick="goPage('yorumlar')" style="cursor:pointer">
+        <div class="prof-row-icon green">💬</div>
+        <div class="prof-row-info">
+          <div class="prof-row-label">Kullanıcı Yorumları</div>
+          <div class="prof-row-val">30 yorum</div>
+        </div>
+        <div class="prof-row-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- En İyi Siteler -->
+  <div class="prof-section">
+    <div class="prof-section-title">Önerilen Siteler</div>
+    <div class="prof-card">
+      <a class="prof-row" href="https://zbhs.short.gy/j4Qr4V" target="_blank" style="text-decoration:none;color:inherit">
+        <img src="https://i.hizliresim.com/6fnmzz0.png" style="width:34px;height:34px;border-radius:8px;object-fit:contain;background:var(--dark3);padding:3px;flex-shrink:0">
+        <div class="prof-row-info">
+          <div class="prof-row-label">Zbahis</div>
+          <div class="prof-row-val">666₺ Deneme Bonusu</div>
+        </div>
+        <div class="prof-row-arrow" style="color:var(--gold)">›</div>
+      </a>
+      <a class="prof-row" href="https://t2m.co/Enic4rq" target="_blank" style="text-decoration:none;color:inherit">
+        <img src="https://i.hizliresim.com/oy7cbng.png" style="width:34px;height:34px;border-radius:8px;object-fit:contain;background:var(--dark3);padding:3px;flex-shrink:0">
+        <div class="prof-row-info">
+          <div class="prof-row-label">Fixbet</div>
+          <div class="prof-row-val">1.000₺ Deneme Bonusu</div>
+        </div>
+        <div class="prof-row-arrow" style="color:var(--gold)">›</div>
+      </a>
+      <a class="prof-row" href="https://tinyurl.com/7pweaty7" target="_blank" style="text-decoration:none;color:inherit">
+        <img src="https://i.hizliresim.com/auxcb6k.png" style="width:34px;height:34px;border-radius:8px;object-fit:contain;background:var(--dark3);padding:3px;flex-shrink:0">
+        <div class="prof-row-info">
+          <div class="prof-row-label">MatadorBet</div>
+          <div class="prof-row-val">1.000₺ Deneme Bonusu</div>
+        </div>
+        <div class="prof-row-arrow" style="color:var(--gold)">›</div>
+      </a>
+    </div>
+  </div>
+
+  <button class="prof-lang-btn" onclick="showToast('Çıkış yapıldı')">🚪 Çıkış Yap</button>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <div class="ni on" id="ni-home" onclick="goPage('home')">
+    <img src="https://i.hizliresim.com/lh7ytbz.png" alt="Anasayfa"><span>Anasayfa</span>
+  </div>
+  <div class="ni" id="ni-casino" onclick="goPage('casino')">
+    <img src="https://i.hizliresim.com/1b2u4iu.png" alt="Casino"><span>Casino</span>
+  </div>
+  <div class="ni" id="ni-yorumlar" onclick="goPage('yorumlar')">
+    <img src="https://i.hizliresim.com/4yo6nes.png" alt="Yorumlar"><span>Yorumlar</span>
+  </div>
+  <div class="ni" id="ni-oyunlar" onclick="goPage('oyunlar')">
+    <img src="https://i.hizliresim.com/odnqqb0.png" alt="Oyunlar"><span>Oyunlar</span>
+  </div>
+  <div class="ni" id="ni-profil" onclick="goPage('profil')">
+    <img src="https://i.hizliresim.com/qjpj95y.png" alt="Profil"><span>Profil</span>
+  </div>
+</nav>
+
+<script>
+/* ── TELEGRAM INIT & PROFİL ── */
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+
+if(tg){
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor && tg.setHeaderColor('#0A0A0F');
+  tg.setBackgroundColor && tg.setBackgroundColor('#0A0A0F');
+}
+
+function loadProfile(){
+  const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+
+  // Üyelik günü (rastgele 1-180 arası - demo)
+  const joinDays = Math.floor(Math.random()*180)+1;
+  // Bonus sayısı (rastgele 5-60)
+  const bonusCount = Math.floor(Math.random()*55)+5;
+  document.getElementById('pstat-gun').textContent = joinDays;
+  document.getElementById('pstat-bonus').textContent = bonusCount;
+
+  if(user){
+    const firstName = user.first_name || '';
+    const lastName  = user.last_name  || '';
+    const fullName  = (firstName+' '+lastName).trim() || 'Kullanıcı';
+    const username  = user.username ? '@'+user.username : 'Kullanıcı adı yok';
+    const userId    = user.id ? '#'+user.id : '';
+    const langCode  = user.language_code ? user.language_code.toUpperCase() : 'TR';
+    const photoUrl  = user.photo_url || null;
+
+    // Büyük isim
+    document.getElementById('prof-name').textContent = fullName;
+    document.getElementById('prof-username').textContent = username;
+    document.getElementById('prof-id').textContent = userId;
+
+    // Satır değerleri
+    document.getElementById('prow-name').textContent = fullName;
+    document.getElementById('prow-username').textContent = username;
+    document.getElementById('prow-id').textContent = userId || '—';
+    document.getElementById('prow-lang').textContent = langCode === 'TR' ? '🇹🇷 Türkçe' : '🌐 '+langCode;
+
+    // Avatar
+    const avatarArea = document.getElementById('prof-avatar-area');
+    if(photoUrl){
+      avatarArea.innerHTML = `<img class="prof-avatar" src="${photoUrl}" alt="${fullName}">`;
+    } else {
+      // İsim baş harfleri ile avatar
+      const initials = (firstName[0]||'')+(lastName[0]||'') || '?';
+      avatarArea.innerHTML = `
+        <div class="prof-avatar-placeholder" style="font-size:28px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;color:var(--gold)">
+          ${initials.toUpperCase()}
+        </div>`;
+    }
+
+    // Premium badge
+    if(user.is_premium){
+      document.querySelector('.prof-badge').innerHTML = '💎 Telegram Premium';
+      document.querySelector('.prof-badge').style.cssText = 'background:rgba(120,80,255,0.15);border-color:rgba(120,80,255,0.4);color:#a080ff';
+    }
+
+  } else {
+    /* ── Telegram dışında açıldıysa (tarayıcı önizleme) ── */
+    document.getElementById('prof-name').textContent = 'Demo Kullanıcı';
+    document.getElementById('prof-username').textContent = '@demo_user';
+    document.getElementById('prof-id').textContent = '#00000000';
+    document.getElementById('prow-name').textContent = 'Demo Kullanıcı';
+    document.getElementById('prow-username').textContent = '@demo_user';
+    document.getElementById('prow-id').textContent = '#00000000';
+    document.getElementById('prow-lang').textContent = '🇹🇷 Türkçe';
+    const avatarArea = document.getElementById('prof-avatar-area');
+    avatarArea.innerHTML = `<div class="prof-avatar-placeholder">👤</div>`;
+  }
+}
+
+function goPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+  document.getElementById('pg-'+n).classList.add('on');
+  document.getElementById('ni-'+n).classList.add('on');
+  window.scrollTo(0,0);
+  if(n==='profil') loadProfile();
+}
+
+// Sayfa ilk açıldığında profili arka planda hazırla
+loadProfile();
+
+document.querySelectorAll('.ci').forEach(el=>{
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.ci').forEach(c=>c.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+
+function bonusTap(card,orig){
+  const b=card.querySelector('.bbadge');
+  b.textContent='✓';b.style.cssText='background:rgba(46,204,113,.15);color:#2ECC71;border-color:rgba(46,204,113,.4)';
+  setTimeout(()=>{b.textContent=orig;b.style.cssText=''},1500);
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+const LINKS=['https://zbhs.short.gy/j4Qr4V','https://t2m.co/Enic4rq','https://tinyurl.com/7pweaty7'];
+function randLink(){return LINKS[Math.floor(Math.random()*LINKS.length)]}
+function randWin(){return (Math.floor(Math.random()*49)+11)*100 + Math.floor(Math.random()*99)+1}
+
+const REEL_SYMBOLS=['🍒','⭐','🔔','💎','🍋','🍇','7️⃣','🎯','🃏','👑'];
+function shuffle(a){return a.sort(()=>Math.random()-.5)}
+
+/* ── SLOT SPIN ANIMATION ── */
+let spinActive=false;
+function spinSlot(gameName, targetUrl){
+  if(spinActive) return;
+  spinActive=true;
+
+  const overlay=document.getElementById('slotOverlay');
+  const winMsg=document.getElementById('slotWinMsg');
+  const msg=document.getElementById('slotMsg');
+  winMsg.textContent='';
+  msg.textContent='Çarklar dönüyor...';
+  overlay.classList.add('show');
+
+  // Her makara için sembol listesi oluştur
+  const reelEls=[0,1,2].map(i=>document.getElementById('r'+i));
+  const finalSymbols=[];
+
+  reelEls.forEach((rel,i)=>{
+    const syms=shuffle([...REEL_SYMBOLS]).slice(0,8);
+    finalSymbols.push(syms[syms.length-1]);
+    rel.innerHTML='';
+    syms.forEach(s=>{
+      const d=document.createElement('div');
+      d.className='reel-item';d.textContent=s;
+      rel.appendChild(d);
+    });
+    rel.style.transition='none';
+    rel.style.transform='translateY(0)';
+  });
+
+  // Dönme animasyonu — CSS transition ile aşağı kaydır
+  setTimeout(()=>{
+    reelEls.forEach((rel,i)=>{
+      const items=rel.querySelectorAll('.reel-item').length;
+      const dur=0.8+(i*0.25);
+      rel.style.transition=`transform ${dur}s cubic-bezier(0.1,0.6,0.3,1)`;
+      rel.style.transform=`translateY(-${(items-1)*80}px)`;
+    });
+  },80);
+
+  const win=randWin();
+
+  // Sonuç mesajı
+  setTimeout(()=>{
+    winMsg.textContent='🏆 '+win.toLocaleString('tr-TR')+'₺ Kazandın!';
+    msg.textContent='Siteye yönlendiriliyorsun...';
+  },1700);
+
+  // Siteye yönlendir ve overlay kapat
+  setTimeout(()=>{
+    overlay.classList.remove('show');
+    spinActive=false;
+    window.open(targetUrl,'_blank');
+  },3000);
+}
+
+const GAMES=[
+  {name:'Gates of Olympus',provider:'Pragmatic Play',rtp:'96.5%',img:'https://i.hizliresim.com/mcfk2qb.png',emoji:'⚡',bg:'linear-gradient(135deg,#0a0820,#2a1a60)'},
+  {name:'Sweet Bonanza',provider:'Pragmatic Play',rtp:'96.5%',img:'https://i.hizliresim.com/hw9yf2s.png',emoji:'🍬',bg:'linear-gradient(135deg,#1a0a30,#5a1a80)'},
+  {name:'The Dog House',provider:'Pragmatic Play',rtp:'96.5%',img:'https://i.hizliresim.com/q112zm7.png',emoji:'🐕',bg:'linear-gradient(135deg,#0a1a0a,#1a5014)'},
+  {name:'Starlight Princess',provider:'Pragmatic Play',rtp:'96.5%',img:'https://i.hizliresim.com/53ynbli.png',emoji:'⭐',bg:'linear-gradient(135deg,#0a0830,#301a60)'},
+  {name:'Big Bass Bonanza',provider:'Pragmatic Play',rtp:'95.7%',img:'https://i.hizliresim.com/7xeblfs.png',emoji:'🎣',bg:'linear-gradient(135deg,#041020,#0a3060)'},
+  {name:'Sugar Rush',provider:'Pragmatic Play',rtp:'96.5%',img:'https://i.hizliresim.com/d9vx6sr.png',emoji:'🍭',bg:'linear-gradient(135deg,#200a30,#6a1a80)'},
+  {name:'Fruit Party',provider:'Pragmatic Play',rtp:'96.5%',img:'https://i.hizliresim.com/litwfnm.png',emoji:'🍓',bg:'linear-gradient(135deg,#1a0a10,#601a2a)'},
+  {name:'Wolf Gold',provider:'Pragmatic Play',rtp:'96.0%',img:'',emoji:'🐺',bg:'linear-gradient(135deg,#0a1010,#0a3020)'},
+  {name:'Book of Dead',provider:"Play'n GO",rtp:'96.2%',img:'',emoji:'📖',bg:'linear-gradient(135deg,#1a1000,#604000)'},
+  {name:'Reactoonz',provider:"Play'n GO",rtp:'96.5%',img:'',emoji:'👾',bg:'linear-gradient(135deg,#001a10,#006040)'},
+];
+GAMES.forEach(g=>g.win=randWin());
+
+function buildGames(){
+  const grid=document.getElementById('games-grid');
+  grid.innerHTML='';
+  GAMES.forEach((g,i)=>{
+    const thumbHtml = g.img
+      ? `<div class="gthumb" style="background:#000">
+           <img src="${g.img}" alt="${g.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+           <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.6);border:1px solid rgba(46,204,113,.4);color:#2ECC71;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px">RTP ${g.rtp}</div>
+         </div>`
+      : `<div class="gthumb" style="background:${g.bg}">
+           <div class="gthumb-inner">
+             <div class="gemoji">${g.emoji}</div>
+             <div class="gbadge-rtp">RTP ${g.rtp}</div>
+           </div>
+         </div>`;
+    const d=document.createElement('div');
+    d.className='gcard';
+    d.innerHTML=`
+      ${thumbHtml}
+      <div class="ginfo">
+        <div class="gname">${g.name}</div>
+        <div class="gprovider">${g.provider}</div>
+        <div class="gwin" id="gwin-${i}">🏆 Son kazanç: ${g.win.toLocaleString('tr-TR')}₺</div>
+        <button class="gbtn" onclick="startSpin(event,${i})">🎰 Oyna →</button>
+      </div>`;
+    grid.appendChild(d);
+  });
+}
+
+function startSpin(e,i){
+  e.stopPropagation();
+  spinSlot(GAMES[i].name, randLink());
+}
+
+setInterval(()=>{
+  const idx=Math.floor(Math.random()*GAMES.length);
+  GAMES[idx].win=randWin();
+  const el=document.getElementById('gwin-'+idx);
+  if(el) el.textContent='🏆 Son kazanç: '+GAMES[idx].win.toLocaleString('tr-TR')+'₺';
+},7000);
+
+buildGames();
+
+// Overlay'e tıklayınca kapat (spin yoksa)
+document.getElementById('slotOverlay').addEventListener('click',function(e){
+  if(e.target===this&&!spinActive) this.classList.remove('show');
+});
+
+/* ══ YORUMLAR ══ */
+const REVIEWS=[
+  {avatar:'https://i.hizliresim.com/skwsbm1.png',name:'Merve K.',site:'zbahis',siteLabel:'Zbahis',stars:5,time:'2 saat önce',
+   text:'Zbahis\'e geçeli 3 ay oldu, hiç pişman olmadım. Para çekimlerim 5 dakikada geliyor. Deneme bonusunu aldım, ilk günden 2.400₺ çektim. Kesinlikle tavsiye ederim 🔥',likes:42},
+  {avatar:'https://i.hizliresim.com/19xpxbm.png',name:'Emre S.',site:'zbahis',siteLabel:'Zbahis',stars:5,time:'3 saat önce',
+   text:'Zbahis\'e bir arkadaşım sayesinde girdim. Canlı destek ekibi gerçekten profesyonel. Gates of Olympus\'ta 4.200₺ kazandım, para aynı gün hesabıma geçti. Tam güven 💪',likes:53},
+  {avatar:'https://i.hizliresim.com/ctundrk.png',name:'Elif T.',site:'platform',siteLabel:'BetRehber Platform',stars:5,time:'4 saat önce',
+   text:'Bu platform sayesinde doğru casinoyu buldum! Yorumlar ve puanlar çok gerçekçi. Zbahis\'i buradan keşfettim, harika bir site. Herkese öneririm 💯',likes:38},
+  {avatar:'https://i.hizliresim.com/trafo5f.png',name:'Murat D.',site:'fixbet',siteLabel:'Fixbet',stars:5,time:'5 saat önce',
+   text:'Fixbet çok kaliteli bir platform. Spor bahisleri ve slotları bir arada sunuyor. Big Bass Bonanza\'da 3.600₺ yaptım, çekim 7 dakika sürdü. İnanılmaz hız! ⚡',likes:67},
+  {avatar:'https://i.hizliresim.com/t83d5o2.png',name:'Zeynep A.',site:'fixbet',siteLabel:'Fixbet',stars:5,time:'6 saat önce',
+   text:'Fixbet\'in arayüzü çok kullanışlı, mobilde de süper çalışıyor. 1000₺ deneme bonusunu kullandım, Gates of Olympus\'ta inanılmaz bir seri yakaladım. Para çekim sürecim de hızlıydı ✅',likes:55},
+  {avatar:'https://i.hizliresim.com/i6zl9ic.png',name:'Selin Y.',site:'matadorbet',siteLabel:'MatadorBet',stars:5,time:'8 saat önce',
+   text:'MatadorBet VIP programına girdim, bonuslar kat kat arttı. Müşteri hizmetleri gece 2\'de bile anında cevap verdi. Bu kadar kaliteli bir casino bulmak zor 👑',likes:61},
+  {avatar:'https://i.hizliresim.com/9mar7cm.png',name:'Kerem A.',site:'matadorbet',siteLabel:'MatadorBet',stars:5,time:'9 saat önce',
+   text:'MatadorBet\'te spor kombinemi kurdurdum, 5.100₺ kazandım. Hesabımdan çekim talebi verdim, 12 dakika sonra bankada. Bu kadar hızlı bir site görmedim gerçekten 🏆',likes:74},
+  {avatar:'https://i.hizliresim.com/6iauj79.png',name:'Büşra D.',site:'zbahis',siteLabel:'Zbahis',stars:5,time:'10 saat önce',
+   text:'Zbahis slot oyunları mükemmel! Sweet Bonanza\'da 5.800₺ kazandım ve sorunsuz çektim. Kripto ile yatırım yapabilmek de ayrı bir artı. Harika platform 🎰',likes:47},
+  {avatar:'https://i.hizliresim.com/1p6mfrs.png',name:'Burak Y.',site:'platform',siteLabel:'BetRehber Platform',stars:5,time:'11 saat önce',
+   text:'BetRehber\'i keşfetmek hayatımı kolaylaştırdı. Artık rastgele sitelere para atmıyorum. Buradaki güvenilir listeden seçiyorum, hiç pişman olmadım. Süper platform 👏',likes:45},
+  {avatar:'https://i.hizliresim.com/1wqn4uv.png',name:'Ayşe M.',site:'platform',siteLabel:'BetRehber Platform',stars:5,time:'12 saat önce',
+   text:'BetRehber\'deki sıralamalar çok güvenilir, sahte değil. Bir sitede sorun yaşadım, buradan öğrendiğim güvenilir casinoya geçtim ve hiç sorun yaşamıyorum artık 🙌',likes:33},
+  {avatar:'https://i.hizliresim.com/fu0qlo7.png',name:'Fatma Ş.',site:'fixbet',siteLabel:'Fixbet',stars:5,time:'1 gün önce',
+   text:'Fixbet\'e ilk yatırımımda %200 bonus geldi, çok şaşırdım. Big Bass Bonanza\'da tam 7.200₺ kazandım! Çekim 10 dakika sürdü. Artık başka yere bakmıyorum 😍',likes:72},
+  {avatar:'https://i.hizliresim.com/1acz838.png',name:'Serkan T.',site:'zbahis',siteLabel:'Zbahis',stars:5,time:'1 gün önce',
+   text:'Zbahis deneme bonusu gerçekten wagersiz! 666₺ aldım, Starlight Princess\'te döndürdüm, 2.900₺ yaptım. Çekim işlemi o gün içinde tamamlandı. Tebrikler Zbahis 🌟',likes:58},
+  {avatar:'https://i.hizliresim.com/mhpys9m.png',name:'Hande P.',site:'matadorbet',siteLabel:'MatadorBet',stars:5,time:'1 gün önce',
+   text:'MatadorBet spor bahisleri için de harika. Kombine kuponumda 3.150₺ kazandım, ertesi gün paramı hesabımda gördüm. Güvenilirlik açısından bir numaralı site ⚽',likes:49},
+  {avatar:'https://i.hizliresim.com/93cx4am.png',name:'Tolga K.',site:'fixbet',siteLabel:'Fixbet',stars:5,time:'1 gün önce',
+   text:'Fixbet mobile uyumu süper. Telefonda oynuyorum, hiç lag yok. Sugar Rush\'ta 3x bonus aldım, 4.400₺ çektim. Arkadaşlarıma da önerdim, hepsi memnun 👍',likes:61},
+  {avatar:'https://i.hizliresim.com/14us64q.png',name:'Ceyda K.',site:'zbahis',siteLabel:'Zbahis',stars:5,time:'1 gün önce',
+   text:'Zbahis 666₺ deneme bonusunu hiç wagersiz verdi, inanamadım! Starlight Princess\'te döndürdüm, 1.800₺ kâr çıkardım. Çekim anında geldi. Süpersiniz 🌟',likes:58},
+  {avatar:'https://i.hizliresim.com/6mphqlf.png',name:'Reyhan O.',site:'platform',siteLabel:'BetRehber Platform',stars:5,time:'2 gün önce',
+   text:'Yorumları okuyarak karar verdim, hiç pişman olmadım. Platform çok şeffaf, hangi sitenin ne kadar bonus verdiği net görünüyor. Devamını bekliyorum 💪',likes:29},
+  {avatar:'https://i.hizliresim.com/p7r34gb.png',name:'Oğuz B.',site:'matadorbet',siteLabel:'MatadorBet',stars:5,time:'2 gün önce',
+   text:'MatadorBet VIP bonusları gerçekten cömert. Haftalık cashback ile ekstra 800₺ aldım. Canlı casinoda Rulet oynuyorum, krupiyeler çok profesyonel. Beş yıldız hak edilmiş 🎡',likes:77},
+  {avatar:'https://i.hizliresim.com/9s7qrq1.png',name:'Neslihan B.',site:'fixbet',siteLabel:'Fixbet',stars:5,time:'2 gün önce',
+   text:'Fixbet müşteri desteği olağanüstü. Telegram\'dan yazdım, 2 dakikada çözüm buldular. Para yatırma ve çekme her şey hızlı. Artık sadık bir kullanıcısıyım ❤️',likes:44},
+  {avatar:'https://i.hizliresim.com/a1x0xw0.png',name:'Gamze Ç.',site:'matadorbet',siteLabel:'MatadorBet',stars:5,time:'2 gün önce',
+   text:'MatadorBet\'te canlı casino bölümü mükemmel! Evolution oyunları gerçekten kaliteli. Blackjack masasında 4.500₺ kazandım ve sorunsuz çektim. Efsane site 🃏',likes:66},
+  {avatar:'https://i.hizliresim.com/i7ihmba.png',name:'Berk Ç.',site:'zbahis',siteLabel:'Zbahis',stars:5,time:'3 gün önce',
+   text:'Zbahis kripto yatırımı mükemmel çalışıyor. USDT ile yatırdım, 3 dakikada onaylandı. Sweet Bonanza\'da 6.200₺ kâr ettim, çekim de kripto ile anında geldi. Harika! 🚀',likes:83},
+  {avatar:'https://i.hizliresim.com/52r4b8x.png',name:'İrem S.',site:'zbahis',siteLabel:'Zbahis',stars:5,time:'3 gün önce',
+   text:'Zbahis\'in mobil uygulaması süper akıcı. Slot oynarken hiç takılma yok. Kasımda Fruit Party\'de 3.300₺ vurdum, çekimim aynı gün geldi. Çok memnunum 🎊',likes:37},
+  {avatar:'https://i.hizliresim.com/dtcc9l4.png',name:'Tuğba A.',site:'platform',siteLabel:'BetRehber Platform',stars:5,time:'3 gün önce',
+   text:'BetRehber olmadan hangi siteye gireceğimi bilemezdim. Buradaki puanlar gerçeği yansıtıyor. Günlük bonus ve çarkı da her gün kullanıyorum, harika bir özellik! 🎡',likes:52},
+  {avatar:'https://i.hizliresim.com/59il535.png',name:'Alper M.',site:'fixbet',siteLabel:'Fixbet',stars:5,time:'3 gün önce',
+   text:'Fixbet\'i 6 aydır kullanıyorum, tek bir sorun yaşamadım. Para çekimlerim hep zamanında geldi. Dog House Megaways\'de 5.700₺ vurdum, en büyük kazancım buydu. Teşekkürler! 🐕',likes:91},
+  {avatar:'https://i.hizliresim.com/bgnuuf6.png',name:'Dilan R.',site:'fixbet',siteLabel:'Fixbet',stars:5,time:'3 gün önce',
+   text:'Fixbet\'e geçişim çok iyi oldu. Wolf Gold\'da 2.900₺, ardından Sugar Rush\'ta 1.750₺ daha kazandım. İki çekim de aynı gün hesabıma geçti. Kesinlikle 5 yıldız 🌠',likes:41},
+  {avatar:'https://i.hizliresim.com/93or35o.png',name:'Pınar E.',site:'matadorbet',siteLabel:'MatadorBet',stars:5,time:'4 gün önce',
+   text:'MatadorBet\'e arkadaşım yönlendirdi, çok teşekkür ettim. İlk hafta 1.000₺ bonusu çevirdim ve 2.600₺ çektim. Güvenilir, hızlı, kaliteli. Başka tarif yok 💎',likes:63},
+  {avatar:'https://i.hizliresim.com/jbxncf0.png',name:'Cem Y.',site:'platform',siteLabel:'BetRehber Platform',stars:5,time:'4 gün önce',
+   text:'BetRehber\'i 3 arkadaşıma önerdim, hepsi teşekkür etti. Doğru casino seçmek çok önemli, bu platform gerçekten güvenilir rehber sunuyor. Günlük bonus sistemi de harika! 🎯',likes:46},
+  {avatar:'https://i.hizliresim.com/czv8jo2.png',name:'Seda N.',site:'zbahis',siteLabel:'Zbahis',stars:5,time:'4 gün önce',
+   text:'Zbahis canlı destek ekibi çok yardımsever. Bir sorunum vardı, 3 dakikada çözüldü. Slot turnuvalarına katıldım, ek 500₺ bonus kazandım. Mükemmel deneyim 🏆',likes:35},
+  {avatar:'https://i.hizliresim.com/fwltael.png',name:'Nazlı K.',site:'platform',siteLabel:'BetRehber Platform',stars:5,time:'5 gün önce',
+   text:'Bu platforma güvenerek Fixbet\'e geçtim, hiç pişman olmadım. Günlük bonus özelliği her gün bir şeyler veriyor, motivasyonu artırıyor. Devam edin lütfen! 🙏',likes:28},
+  {avatar:'https://i.hizliresim.com/eg1x5m9.png',name:'Şeyma T.',site:'matadorbet',siteLabel:'MatadorBet',stars:5,time:'5 gün önce',
+   text:'MatadorBet bonusları gerçekten cömert. Haftalık cashback aldım, o parayla yeni bir seri yakaladım. The Dog House\'da 4.100₺ kâr ettim. Harika bir deneyimdi 🐕',likes:57},
+  {avatar:'https://i.hizliresim.com/2g57rf9.png',name:'Ece B.',site:'fixbet',siteLabel:'Fixbet',stars:5,time:'6 gün önce',
+   text:'Fixbet\'te Gates of Olympus oynarken 8x çarpan geldi, o anki heyecanı tarif edemem! 6.800₺ kazandım, para çekim 8 dakika sürdü. Bu siteyi herkese anlatıyorum 🔥',likes:89},
+];
+
+let likedSet=new Set();
+let currentFilter='all';
+
+function filterYorum(btn,cat){
+  document.querySelectorAll('.yfil').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  currentFilter=cat;
+  renderYorumlar();
+}
+
+function renderYorumlar(){
+  const list=document.getElementById('yorum-list');
+  const filtered=currentFilter==='all'?REVIEWS:REVIEWS.filter(r=>r.site===currentFilter);
+  list.innerHTML='';
+  filtered.forEach((r,idx)=>{
+    const globalIdx=REVIEWS.indexOf(r);
+    const liked=likedSet.has(globalIdx);
+    const d=document.createElement('div');
+    d.className='ycard';
+    d.innerHTML=`
+      <div class="ytop">
+        <img class="yavatar" src="${r.avatar}" alt="${r.name}">
+        <div class="ymeta">
+          <div class="yname">${r.name}</div>
+          <div class="yside">📍 ${r.siteLabel}</div>
+        </div>
+        <div class="ytime">${r.time}</div>
+      </div>
+      <div class="ystars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+      <div class="ytext" style="margin-top:8px">${r.text}</div>
+      <div class="ylikes">
+        <button class="ylike-btn${liked?' liked':''}" onclick="toggleLike(this,${globalIdx})">
+          ${liked?'❤️':'🤍'} Beğen
+        </button>
+        <span style="font-size:12px;color:var(--muted);margin-left:4px" id="lc-${globalIdx}">${r.likes+(liked?1:0)} beğeni</span>
+        <span class="ytag" style="margin-top:0;margin-left:auto">${r.siteLabel}</span>
+      </div>`;
+    list.appendChild(d);
+  });
+}
+
+function toggleLike(btn,idx){
+  if(likedSet.has(idx)){
+    likedSet.delete(idx);
+    btn.classList.remove('liked');
+    btn.innerHTML='🤍 Beğen';
+    document.getElementById('lc-'+idx).textContent=(REVIEWS[idx].likes)+' beğeni';
+  } else {
+    likedSet.add(idx);
+    btn.classList.add('liked');
+    btn.innerHTML='❤️ Beğen';
+    document.getElementById('lc-'+idx).textContent=(REVIEWS[idx].likes+1)+' beğeni';
+  }
+}
+
+renderYorumlar();
+</script>
+</body>
+</html>
