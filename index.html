@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BetRehber</title>
+<!-- Telegram Mini App zorunlu script -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -276,8 +278,8 @@ header{position:sticky;top:0;z-index:300;height:56px;background:#0A0A0F;border-b
 <header>
   <img class="logo" src="https://i.hizliresim.com/jy2m4bc.png" alt="Logo">
   <div class="hbtns">
-    <button class="hb hb-out">Giriş</button>
-    <button class="hb hb-fill">Kayıt</button>
+    <button class="hb hb-out" onclick="goPage('profil')">Giriş</button>
+    <button class="hb hb-fill" onclick="goPage('profil')">Kayıt Ol</button>
   </div>
 </header>
 
@@ -589,18 +591,41 @@ const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : 
 if(tg){
   tg.ready();
   tg.expand();
-  tg.setHeaderColor && tg.setHeaderColor('#0A0A0F');
-  tg.setBackgroundColor && tg.setBackgroundColor('#0A0A0F');
+  try{ tg.setHeaderColor('#0A0A0F'); }catch(e){}
+  try{ tg.setBackgroundColor('#0A0A0F'); }catch(e){}
+}
+
+/* Telegram'dan kullanıcı çekme — tüm yöntemler denenir */
+function getTgUser(){
+  if(!tg) return null;
+
+  /* Yöntem 1: initDataUnsafe.user (en yaygın) */
+  try{
+    const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
+    if(u && u.id) return u;
+  }catch(e){}
+
+  /* Yöntem 2: initData string'i parse et */
+  try{
+    if(tg.initData && tg.initData.length > 0){
+      const params = new URLSearchParams(tg.initData);
+      const userStr = params.get('user');
+      if(userStr){
+        const u = JSON.parse(decodeURIComponent(userStr));
+        if(u && u.id) return u;
+      }
+    }
+  }catch(e){}
+
+  return null;
 }
 
 function loadProfile(){
-  const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  const user = getTgUser();
 
-  // Üyelik günü (rastgele 1-180 arası - demo)
-  const joinDays = Math.floor(Math.random()*180)+1;
-  // Bonus sayısı (rastgele 5-60)
+  const joinDays   = Math.floor(Math.random()*180)+1;
   const bonusCount = Math.floor(Math.random()*55)+5;
-  document.getElementById('pstat-gun').textContent = joinDays;
+  document.getElementById('pstat-gun').textContent   = joinDays;
   document.getElementById('pstat-bonus').textContent = bonusCount;
 
   if(user){
@@ -612,47 +637,43 @@ function loadProfile(){
     const langCode  = user.language_code ? user.language_code.toUpperCase() : 'TR';
     const photoUrl  = user.photo_url || null;
 
-    // Büyük isim
-    document.getElementById('prof-name').textContent = fullName;
+    document.getElementById('prof-name').textContent     = fullName;
     document.getElementById('prof-username').textContent = username;
-    document.getElementById('prof-id').textContent = userId;
-
-    // Satır değerleri
-    document.getElementById('prow-name').textContent = fullName;
+    document.getElementById('prof-id').textContent       = userId;
+    document.getElementById('prow-name').textContent     = fullName;
     document.getElementById('prow-username').textContent = username;
-    document.getElementById('prow-id').textContent = userId || '—';
-    document.getElementById('prow-lang').textContent = langCode === 'TR' ? '🇹🇷 Türkçe' : '🌐 '+langCode;
+    document.getElementById('prow-id').textContent       = userId || '—';
+    document.getElementById('prow-lang').textContent     = langCode === 'TR' ? '🇹🇷 Türkçe' : '🌐 '+langCode;
 
-    // Avatar
     const avatarArea = document.getElementById('prof-avatar-area');
     if(photoUrl){
-      avatarArea.innerHTML = `<img class="prof-avatar" src="${photoUrl}" alt="${fullName}">`;
+      avatarArea.innerHTML = `<img class="prof-avatar" src="${photoUrl}" alt="${fullName}" onerror="this.parentNode.innerHTML='<div class=prof-avatar-placeholder style=font-size:28px;font-family:Bebas Neue,sans-serif;color:var(--gold)>${(firstName[0]||'?').toUpperCase()}</div>'">`;
     } else {
-      // İsim baş harfleri ile avatar
-      const initials = (firstName[0]||'')+(lastName[0]||'') || '?';
-      avatarArea.innerHTML = `
-        <div class="prof-avatar-placeholder" style="font-size:28px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;color:var(--gold)">
-          ${initials.toUpperCase()}
-        </div>`;
+      const initials = ((firstName[0]||'')+(lastName[0]||'')||'?').toUpperCase();
+      avatarArea.innerHTML = `<div class="prof-avatar-placeholder" style="font-size:30px;font-family:'Bebas Neue',sans-serif;color:var(--gold)">${initials}</div>`;
     }
 
-    // Premium badge
     if(user.is_premium){
-      document.querySelector('.prof-badge').innerHTML = '💎 Telegram Premium';
-      document.querySelector('.prof-badge').style.cssText = 'background:rgba(120,80,255,0.15);border-color:rgba(120,80,255,0.4);color:#a080ff';
+      const badge = document.querySelector('.prof-badge');
+      badge.innerHTML = '💎 Telegram Premium';
+      badge.style.cssText = 'background:rgba(120,80,255,0.15);border-color:rgba(120,80,255,0.4);color:#a080ff';
     }
 
   } else {
-    /* ── Telegram dışında açıldıysa (tarayıcı önizleme) ── */
-    document.getElementById('prof-name').textContent = 'Demo Kullanıcı';
-    document.getElementById('prof-username').textContent = '@demo_user';
-    document.getElementById('prof-id').textContent = '#00000000';
-    document.getElementById('prow-name').textContent = 'Demo Kullanıcı';
-    document.getElementById('prow-username').textContent = '@demo_user';
-    document.getElementById('prow-id').textContent = '#00000000';
-    document.getElementById('prow-lang').textContent = '🇹🇷 Türkçe';
-    const avatarArea = document.getElementById('prof-avatar-area');
-    avatarArea.innerHTML = `<div class="prof-avatar-placeholder">👤</div>`;
+    /* Telegram dışı / initData henüz hazır değil — 1 sn sonra tekrar dene */
+    setTimeout(()=>{
+      const u2 = getTgUser();
+      if(u2){ loadProfile(); }
+      /* Yoksa demo göster */
+    }, 1000);
+
+    document.getElementById('prof-name').textContent     = 'Yükleniyor...';
+    document.getElementById('prof-username').textContent = '';
+    document.getElementById('prof-id').textContent       = '';
+    document.getElementById('prow-name').textContent     = '—';
+    document.getElementById('prow-username').textContent = '—';
+    document.getElementById('prow-id').textContent       = '—';
+    document.getElementById('prow-lang').textContent     = '🇹🇷 Türkçe';
   }
 }
 
